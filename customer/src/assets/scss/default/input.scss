@@ -1,0 +1,136 @@
+@mixin sAndsBoxInBtn {
+    border-radius: 20px;
+    border: 1px solid lightslategray;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+
+    &:focus{
+        border: none;
+        outline: none;
+
+    }
+  }
+
+  @mixin sAndsBoxBtn {
+    position: absolute;
+    left:100%;
+    top: 50%;
+    transform: translate(-100%,-50%);
+    border: none;
+    padding: 0;
+
+    background-color: #000f1f;
+
+    color:whitesmoke;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:focus{
+        border: none;
+        outline: none;
+    }
+  }
+
+
+.e-subscribe-box{
+    position: relative;
+    min-width: 300px;
+    height: $subscribeInputHeight;
+    line-height:  $subscribeInputHeight
+
+}
+.e-search-panel{
+    width: calc(100% - 20px);
+}
+.e-search-box{
+    position: relative;
+   width: 100%;
+    min-width: auto;
+    height:  $eNavHeight - 6px;
+    line-height:  $eNavHeight - 6px;
+}
+
+.e-subscribe-input,.e-subscribe-btn{
+    @include sAndsBoxInBtn;
+}
+.e-search-input,.e-search-btn{
+    @include sAndsBoxInBtn;
+}
+
+
+.e-subscribe-input{
+    height: 100%;
+    width: 100%;
+    padding: 0 10px;
+    line-height: $subscribeInputHeight;
+    box-shadow: 0px 0px 0px 3px #A0A0A0, -50px -50px 0px -30px rgba(0,0,0,0);
+    &:focus{
+        box-shadow: 0px 0px 0px 3px $inputInnerBtnColor, -50px -50px 0px -30px rgba(0,0,0,0);
+    }
+}
+.e-search-input{
+    width: 100%;
+
+    margin : 0 auto;
+   height: 100%;
+
+    padding: 0 10px;
+
+   // box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.95);
+    &:focus{
+        border: 1px solid gold;
+       // box-shadow: 0px 0px 1px 1px rgba(60,21,125,0.95);
+
+    }
+
+}
+
+.e-subscribe-btn{
+
+    height: $subscribeInputHeight;
+    width: 100px;
+    @include sAndsBoxBtn;
+
+}
+
+.e-search-btn{
+
+
+
+    width: 100px;
+    @include sAndsBoxBtn;
+    height:  $eNavHeight - 6px;
+
+}
+
+
+
+.e-search-panel{
+    display: flex;
+    justify-content: center;
+    position: relative;
+    flex-direction: column;
+    top:0%;
+    left: 0%;
+    padding-top: 0px;
+
+    z-index: 3;
+
+
+
+    .e-search-collection{
+        position: absolute;
+        //background-color: rgba(222 226 230);
+        padding: 5px;
+        top: $eNavHeight;
+        width: 100%;
+        li{
+            border-bottom: 1px dotted silver;
+        }
+    }
+
+
+}
+

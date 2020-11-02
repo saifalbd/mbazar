@@ -1,0 +1,69 @@
+php artisan make:Request Admin/AdminSearchTable
+php artisan make:Request SslOnSuccess
+php artisan make:Controller DiscountController -r
+php artisan make:Controller  ApiUser/NotificationController -r
+
+php artisan make:Controller Admin/VariantOptionController -r
+
+php artisan make:migration create_Images -m
+php artisan make:resource Admin/ProductCollection --collection
+php artisan make:resource Admin/VariantResource
+php artisan make:resource CartResource
+php artisan serve
+php artisan migrate
+npm run watch
+npm run dev
+git  status
+git  add .
+git commit -m "configure websocket"
+php artisan make:notification PostComment
+git push -u origin master
+npm i laravel-echo pusher-js --save
+
+php artisan make:Model VariantOption -mrc
+php artisan make:Model Product
+php artisan make:Model Category
+php artisan make:Model Cart
+php artisan make:Model Image -migration
+
+php artisan make:component vin
+
+php artisan make:observer OrderObserver --model=Order
+php artisan make:middleware Vistor
+table
+$ npm install @vuex-orm/core --save
+php artisan make:seeder ItemSeeder
+
+
+php artisan make:notification UserLogged
+php artisan make:factory UnitFactory --model=UnitType
+php artisan db:seed
+php artisan db:seed --class=UserSeeder
+php artisan db:seed --class=ProductSeeder
+php artisan db:seed --class=BrandSeeder
+php artisan db:seed --class=VariantSeeder
+php artisan db:seed --class=CategorySeeder
+php artisan db:seed --class=OptionSeeder
+php artisan db:seed --class=LandingSeeder
+php artisan db:seed --class=OptionSeeder
+php artisan db:seed --class=MenuSeeder
+php artisan db:seed --class=GeoLocationSeeder
+php artisan db:seed --class=EmailSeeder
+php artisan make:factory ProductFactory --model=Product
+php artisan make:factory CategoryFactory --model=Category
+php artisan make:factory BrandFactory --model=Brand
+php artisan make:seeder ProductSeeder
+php artisan make:seeder CategorySeeder
+php artisan make:seeder BrandSeeder
+php artisan make:seeder UserSeeder
+php artisan make:seeder VariantSeeder
+$item->getFirstMediaUrl()
+
+php artisan migrate
+
+01714915227
+        <img src="{{}}" alt="">
+
+https://pusher.com/tutorials/presence-channels-laravel
+
+

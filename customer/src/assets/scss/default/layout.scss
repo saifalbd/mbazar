@@ -1,0 +1,16 @@
+.e-product-card{
+    cursor:context-menu;
+}
+
+.pointer{
+    cursor: pointer;
+}
+a:link{
+    text-decoration: none;
+}
+.cart-closeBtn{
+    position: absolute;
+    left: 0;
+    transform: translateX(-50%);
+
+}

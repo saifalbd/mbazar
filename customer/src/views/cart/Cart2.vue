@@ -1,0 +1,414 @@
+<template>
+<div id="cart">
+
+    <cartSideBar
+        :visible="isCartSidebarOpen"
+        title="My Cart"
+        class="sf-sidebar--right sf-sidebar--icon"
+        @close="isCartSidebarOpen = false">
+        <template v-if="totalItems" #content-top>
+            <SfProperty
+                class="sf-property--large"
+                name="Total items"
+                :value="totalItems" />
+        </template>
+
+        <transition
+            name="sf-fade"
+            mode="out-in">
+
+            <div
+                v-if="totalItems"
+                key="my-cart"
+                class="my-cart">
+
+                <div
+                    class="collected-product-list"
+                    style="position:relative">
+
+                    <!-- start overly -->
+                    <v-overlay
+                        :absolute="true"
+                        :value="overlay">
+                        <v-progress-circular
+                            indeterminate
+                            size="100"
+                            color="primary"></v-progress-circular>
+                    </v-overlay>
+                    <!-- end overly -->
+                    <transition-group
+                        name="sf-fade"
+                        tag="div">
+                        <cartProduct
+                            v-for="product in products"
+                            :key="product.id"
+                            v-model="product.qty"
+                            @input="qtyPlusMinus($event,product)"
+                            :image="product.image"
+                            :title="product.title"
+                            :regular-price="product.price.regular"
+                            :special-price="product.price.special"
+                            class="collected-product"
+                            @click:remove="removeHandler(product)">
+                            <template #configuration>
+                                <div class="collected-product__properties">
+                                    <variant
+                                        v-for="(property, key) in product.configuration"
+                                        :key="key"
+                                        :name="property.name"
+                                        :value="property.value"></variant>
+                                </div>
+                            </template>
+                            <template #actions>
+                                <div>
+                                    <span class="mr-1 pointer">
+                                        <small>Save for later</small>
+                                    </span>
+                                    <span class="pointer">
+                                        <small>Add to compare</small>
+                                    </span>
+                                </div>
+                            </template>
+                        </cartProduct>
+                    </transition-group>
+                </div>
+            </div>
+            <div
+                v-else
+                key="empty-cart"
+                class="empty-cart">
+                <div class="empty-cart__banner">
+                    <SfImage
+                        alt="Empty bag"
+                        class="empty-cart__image"
+                        :src="require('@storefront-ui/shared/icons/empty_cart.svg')" />
+                    <SfHeading
+                        title="Your cart is empty"
+                        :level="2"
+                        class="empty-cart__heading"
+                        description="Looks like you haven’t added any items to the bag yet. Start
+              shopping to fill it in." />
+                </div>
+            </div>
+        </transition>
+        <template #content-bottom>
+            <transition name="sf-fade">
+                <div v-if="totalItems">
+                    <v-row class="justify-space-between mb-2">
+                        <span>
+                            <h3> Total price:</h3>
+                        </span>
+                        <span>
+                            <h4> {{totalPrice}}</h4>
+
+                        </span>
+                    </v-row>
+                    <v-btn
+                        large
+                        block
+                        color="primary"
+                        dark>
+                        Go to checkout
+                    </v-btn>
+
+                </div>
+                <div v-else>
+                    <v-btn
+                        large
+                        block
+                        color="primary"
+                        dark>
+                        Start shopping
+                    </v-btn>
+                </div>
+            </transition>
+        </template>
+    </cartSideBar>
+</div>
+</template>
+
+<script>
+import variant from './_internal/variant.vue';
+import cartProduct from './_internal/cartProduct.vue';
+import cartSideBar from './_internal/cartSideBar'
+
+import {
+    SfSidebar,
+    SfButton,
+    SfHeading,
+    SfProperty,
+    SfPrice,
+    SfImage,
+    SfCollectedProduct,
+
+} from '../../../index';
+import {
+    Cart
+} from '../../models';
+import {
+    axios
+} from '../../plugins/axios';
+export default {
+    name: "Cart",
+    components: {
+        SfSidebar,
+        SfButton,
+        SfHeading,
+        SfImage,
+        SfProperty,
+        SfPrice,
+        SfCollectedProduct,
+
+        variant,
+        cartProduct,
+        cartSideBar
+
+    },
+    data() {
+        return {
+            currencySign: '',
+
+            overlay: false,
+
+            products: [{
+                    title: "Cream Beach Bag",
+                    id: "CBB1",
+                    image: "assets/storybook/Home/productA.jpg",
+                    price: {
+                        regular: "$50.00"
+                    },
+                    configuration: [{
+                            name: "Size",
+                            value: "XS"
+                        },
+                        {
+                            name: "Color",
+                            value: "White"
+                        },
+                    ],
+                    qty: "1",
+                },
+                {
+                    title: "Cream Beach Bag",
+                    id: "CBB2",
+                    image: "assets/storybook/Home/productB.jpg",
+                    price: {
+                        regular: "$50.00",
+                        special: "$20.05"
+                    },
+                    configuration: [{
+                            name: "Size",
+                            value: "XS"
+                        },
+                        {
+                            name: "Color",
+                            value: "White"
+                        },
+                    ],
+                    qty: "2",
+                },
+                {
+                    title: "Cream Beach Bag",
+                    id: "CBB3",
+                    image: "assets/storybook/Home/productC.jpg",
+                    price: {
+                        regular: "$50.00",
+                        special: "$20.50"
+                    },
+                    configuration: [{
+                            name: "Size",
+                            value: "XS"
+                        },
+                        {
+                            name: "Color",
+                            value: "White"
+                        },
+                    ],
+                    qty: "1",
+                },
+            ],
+        };
+    },
+    computed: {
+        isCartSidebarOpen: {
+            get() {
+                return true;
+                return this.$store.state.cartOn;
+            },
+            set(val) {
+                this.$store.commit('cartOn', val)
+            }
+
+        },
+        // products() {
+        //     return Cart.all();
+        // },
+
+        totalItems() {
+            return this.products.length ?
+                this.products.reduce(
+                    (totalItems, product) => totalItems + parseInt(product.qty, 10),
+                    0
+                ) : 0;
+        },
+        totalPrice() {
+
+            return this.products.length ? this.products.reduce((totalPrice, product) => {
+                    const price = product.price.special ?
+                        product.price.special.replace("$", "") :
+                        product.price.regular.replace("$", "");
+                    const summary = parseFloat(price).toFixed(2) * product.qty;
+                    return totalPrice + summary;
+                }, 0)
+                .toFixed(2) : 0;
+        },
+    },
+    methods: {
+        removeCurrencySign(val) {
+            this.currencySign = "$";
+            return parseInt(val.replace(this.currencySign, ""))
+        },
+        addCurrencySign(val) {
+            return this.currencySign + val
+        },
+        async removeHandler(cart) {
+            this.overlay = true;
+
+            try {
+                await axios.delete(`/carts/${cart.id}`);
+                Cart.delete(cart.id);
+
+                this.overlay = false;
+            } catch (error) {
+                console.log(error)
+                alert('error Cart');
+
+            }
+
+        },
+        async qtyPlusMinus($event, cart) {
+            this.overlay = true;
+            const qty = $event;
+
+            try {
+                let {
+                    data
+                } = await axios.put(`/carts/${cart.id}`, {
+                    qty
+                })
+                this.overlay = false;
+            } catch (error) {
+                alert('qtyPlusMinus error')
+            }
+
+            Cart.update({
+                where: cart.id,
+                data: {
+                    qty
+                }
+            })
+
+        }
+    },
+};
+</script>
+
+<style lang="scss" scoped>
+@import "~@storefront-ui/vue/styles";
+
+#cart {
+    @include for-desktop {
+        &>* {
+            --sidebar-bottom-padding: var(--spacer-base);
+            --sidebar-content-padding: var(--spacer-base);
+        }
+    }
+}
+
+.my-cart {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    &__total-items {
+        margin: 0;
+    }
+
+    &__total-price {
+        --price-font-size: var(--font-xl);
+        --price-font-weight: var(--font-semibold);
+        margin: 0 0 var(--spacer-base) 0;
+    }
+}
+
+.empty-cart {
+    --heading-description-margin: 0 0 var(--spacer-xl) 0;
+    --heading-title-margin: 0 0 var(--spacer-base) 0;
+    --heading-title-color: var(--c-primary);
+    --heading-title-font-weight: var(--font-semibold);
+    display: flex;
+    flex: 1;
+    align-items: center;
+    flex-direction: column;
+
+    &__banner {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+    }
+
+    &__heading {
+        padding: 0 var(--spacer-base);
+    }
+
+    &__image {
+        --image-width: 13.1875rem;
+        margin: 0 0 var(--spacer-2xl) 0;
+    }
+
+    @include for-desktop {
+        --heading-title-font-size: var(--font-xl);
+    }
+}
+
+.collected-product-list {
+    flex: 1;
+}
+
+.collected-product {
+    margin: 0 0 var(--spacer-sm) 0;
+
+    &__properties {
+        margin: var(--spacer-xs) 0 0 0;
+    }
+
+    &__actions {
+        transition: opacity 150ms ease-in-out;
+    }
+
+    &__save,
+    &__compare {
+        --button-padding: 0;
+
+        &:focus {
+            --cp-save-opacity: 1;
+            --cp-compare-opacity: 1;
+        }
+    }
+
+    &__save {
+        opacity: var(--cp-save-opacity, 0);
+    }
+
+    &__compare {
+        opacity: var(--cp-compare-opacity, 0);
+    }
+
+    &:hover {
+        --cp-save-opacity: 1;
+        --cp-compare-opacity: 1;
+    }
+}
+</style>

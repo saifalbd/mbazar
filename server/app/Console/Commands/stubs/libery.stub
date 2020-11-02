@@ -1,0 +1,19 @@
+<?php
+
+namespace DummyNamespace;
+
+//php artisan make:lib class Name
+//command
+
+class DummyClass {
+
+}
+
+class DummyClass
+{
+
+
+
+
+ }
+
